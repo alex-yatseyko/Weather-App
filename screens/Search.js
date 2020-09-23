@@ -20,21 +20,25 @@ const GEOCODING_KEY = 'AIzaSyBCyOEh2WrOPQOTrUtFZdknEInK6TthZxI'
 
 export const Search = ({ route, navigation }) => {
     const { error, request } = useHttp()
-    const { data } = route.params;
+    const { data } = route.params ? route.params : {};
     const [city, setCity] = useState('')
     const [weatherData, setWeatherData] = useState([])
+    const [search, setSearch] = useState('Lviv')
+    const [showResults, setShowResult] = useState(false)
 
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     const getCityCoords = async () => {
         // https://maps.googleapis.com/maps/api/geocode/json?address=Anfield%20Rd,%20Anfield,%20Liverpool%20L4%200TH,%20United%20Kingdom&key=YOUR_API_KEY
         
-        const geocodingUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=Lviv&key=AIzaSyBCyOEh2WrOPQOTrUtFZdknEInK6TthZxI`
+        const geocodingUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&key=${GEOCODING_KEY}`
         try {
             const req = await request(geocodingUrl)
-            // setWeatherData(req.daily)
-            // console.log(req.geometry.location)
-            console.log(req.results[0].geometry.location)
+            setCity({
+                city: req.results[0].address_components.long_name,
+                lat: req.results[0].geometry.location.lat,
+                lon: req.results[0].geometry.location.lng,
+            })
         } catch (e) {
             console.log(e)
         }
@@ -61,7 +65,6 @@ export const Search = ({ route, navigation }) => {
 
     useEffect(() => {
         data ? setCity(data) : null
-        getCityCoords()
     }, [])
 
     useEffect(() => {
@@ -84,15 +87,23 @@ export const Search = ({ route, navigation }) => {
             <View style={styles.form}>
                 <TextInput
                     style={styles.input}
+                    onChange={(e) => {
+                        setSearch(e.nativeEvent.text)
+                    }}
                 />
                 <TouchableOpacity
                     onPress={() => {
-
+                        getCityCoords()
                     }}
                     style={styles.searchBtn}
                 >
                     <Icon name="search" size={25} color={'white'} />
                 </TouchableOpacity>
+                {showResults ?
+                <ScrollView style={styles.results}>
+                    
+                </ScrollView>
+                : null }
             </View>
             <ScrollView style={styles.dataWrapper}>
                 {weatherData ? weatherData.map(e => {
