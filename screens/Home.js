@@ -98,7 +98,9 @@ export const Home = ({navigation}) => {
                   <TouchableOpacity
                     onPress={() => {
                       console.log('test opacity')
-                    //   navigation.navigate('City')
+                        // navigation.navigate('City', {
+                        //     data: `${schedule.name}${schedule['@id'].slice(11, 15)}`,
+                        // })
                     }}
                     style={{
                       width: 150,
