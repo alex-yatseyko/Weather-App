@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useHttp } from '../hooks/http.hook'
 
 const WEATHER_API_KEY = '95e01fabdd174fc4972bcd4fb76fe05e'
+const GEOCODING_KEY = 'AIzaSyBCyOEh2WrOPQOTrUtFZdknEInK6TthZxI'
 
 export const Search = ({ route, navigation }) => {
     const { error, request } = useHttp()
@@ -24,6 +25,20 @@ export const Search = ({ route, navigation }) => {
     const [weatherData, setWeatherData] = useState([])
 
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    const getCityCoords = async () => {
+        // https://maps.googleapis.com/maps/api/geocode/json?address=Anfield%20Rd,%20Anfield,%20Liverpool%20L4%200TH,%20United%20Kingdom&key=YOUR_API_KEY
+        
+        const geocodingUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=Lviv&key=AIzaSyBCyOEh2WrOPQOTrUtFZdknEInK6TthZxI`
+        try {
+            const req = await request(geocodingUrl)
+            // setWeatherData(req.daily)
+            // console.log(req.geometry.location)
+            console.log(req.results[0].geometry.location)
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     const getWeatherFull = async () => {
         // const weatherUrl = `http://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&cnt=7&appid=${WEATHER_API_KEY}`
@@ -39,14 +54,6 @@ export const Search = ({ route, navigation }) => {
         try {
             const req = await request(weatherUrl)
             setWeatherData(req.daily)
-            // console.log(weatherData[0].temp.day)
-
-            // console.log(new Date(req.list[0].dt * 1000).getDay())
-            // console.log(req.list[0].dt)
-            // console.log(new Date(req.list[30].dt * 1000).getDay())
-            // console.log(req.list[30].dt)
-            // const newData = []
-            // console.log(newData)
         } catch (e) {
             console.log(e)
         }
@@ -54,6 +61,7 @@ export const Search = ({ route, navigation }) => {
 
     useEffect(() => {
         data ? setCity(data) : null
+        getCityCoords()
     }, [])
 
     useEffect(() => {
