@@ -6,33 +6,25 @@ import {
   View,
   Text,
   StatusBar,
-  TouchableOpacity
+  TouchableOpacity,
+  Button
 } from 'react-native';
-import MapView, { UrlTile, PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
-import { useHttp } from './hooks/http.hook'
-import { Navigation } from './navigation/'
+import { Navigation } from './navigation/Navigation'
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
+import { NavigationContainer } from '@react-navigation/native';
 
 
 
 const App: () => React$Node = () => {
-
-
-
   return (
     <>
+    <NavigationContainer>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
+        <View style={{flex: 1}}>
         <Navigation />
-      </SafeAreaView>
+          {/* <Routes /> */}
+        </View>
+      </NavigationContainer>
     </>
   );
 };

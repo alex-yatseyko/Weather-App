@@ -42,7 +42,6 @@ export const Home = ({navigation}) => {
             const req = await request(weatherUrl)
             setCurrentCity(req.name)
             setCurrentTemp(req.main.temp)
-            // console.log(weatherUrl)
           } catch (e) {
             console.log(e)
           }
@@ -99,6 +98,7 @@ export const Home = ({navigation}) => {
                   <TouchableOpacity
                     onPress={() => {
                       console.log('test opacity')
+                    //   navigation.navigate('City')
                     }}
                     style={{
                       width: 150,
