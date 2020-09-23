@@ -44,7 +44,6 @@ export const Home = ({ navigation }) => {
             const req = await request(weatherUrl)
             setCurrentCity(req.name)
             setCurrentTemp(req.main.temp)
-            console.log('test')
         } catch (e) {
             console.log(e)
         }

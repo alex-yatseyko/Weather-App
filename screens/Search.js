@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
     SafeAreaView,
     StyleSheet,
@@ -19,10 +19,15 @@ const WEATHER_API_KEY = '95e01fabdd174fc4972bcd4fb76fe05e'
 
     // api.openweathermap.org/data/2.5/forecast/daily?q={city name}&cnt=7&appid={API key}
 
-export const Search = ({navigation}) => {
+export const Search = ({route, navigation}) => {
+    const { data } = route.params;
+
+    useEffect(() => {
+        data ? console.log(data) : null
+    })
+
     return (
         <SafeAreaView>
-        <View>
             <View style={styles.header}>
                 <TouchableOpacity
                     onPress={() => {
@@ -32,12 +37,9 @@ export const Search = ({navigation}) => {
                     <Icon name="chevron-left" size={25} color={'white'}/>
                 </TouchableOpacity>
                 <Text style={styles.title}>City Search</Text>
-                <Icon name="chevron-left" size={25} color={'violet'}/>
+                <Icon name="chevron-left" size={25} color={'purple'}/>
             </View>
-            <Text>Search</Text>
-            <TextInput/>
-            <Icon name="temperature" size={25}/>
-        </View>
+            {/* <Icon name="thermometer-half" size={25} color={'purple'}/> */}
         <View>
             <TextInput />
             <TouchableOpacity
