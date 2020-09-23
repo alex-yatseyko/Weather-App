@@ -23,22 +23,27 @@ export const Search = ({ route, navigation }) => {
     const { data } = route.params ? route.params : {};
     const [city, setCity] = useState('')
     const [weatherData, setWeatherData] = useState([])
-    const [search, setSearch] = useState('Lviv')
+    const [search, setSearch] = useState('')
     const [showResults, setShowResult] = useState(false)
+    const [errorSearch, setSearchError] = useState('')
 
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     const getCityCoords = async () => {
-        // https://maps.googleapis.com/maps/api/geocode/json?address=Anfield%20Rd,%20Anfield,%20Liverpool%20L4%200TH,%20United%20Kingdom&key=YOUR_API_KEY
-        
         const geocodingUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&key=${GEOCODING_KEY}`
         try {
             const req = await request(geocodingUrl)
-            setCity({
-                city: req.results[0].address_components.long_name,
-                lat: req.results[0].geometry.location.lat,
-                lon: req.results[0].geometry.location.lng,
-            })
+            // console.log(geocodingUrl)
+            if(req.status == 'OK') {
+                setCity({
+                    city: req.results[0].address_components.long_name,
+                    lat: req.results[0].geometry.location.lat,
+                    lon: req.results[0].geometry.location.lng,
+                })
+            } else {
+                setSearchError(req.status)
+                setShowResult(true)
+            }
         } catch (e) {
             console.log(e)
         }
@@ -65,6 +70,7 @@ export const Search = ({ route, navigation }) => {
 
     useEffect(() => {
         data ? setCity(data) : null
+        data ? setSearch(data.city) : null
     }, [])
 
     useEffect(() => {
@@ -77,6 +83,7 @@ export const Search = ({ route, navigation }) => {
                 <TouchableOpacity
                     onPress={() => {
                         navigation.goBack()
+                        setSearch('')
                     }}
                 >
                     <Icon name="chevron-left" size={25} color={'white'} />
@@ -88,8 +95,10 @@ export const Search = ({ route, navigation }) => {
                 <TextInput
                     style={styles.input}
                     onChange={(e) => {
+                        setShowResult(false)
                         setSearch(e.nativeEvent.text)
                     }}
+                    value={search}
                 />
                 <TouchableOpacity
                     onPress={() => {
@@ -101,7 +110,7 @@ export const Search = ({ route, navigation }) => {
                 </TouchableOpacity>
                 {showResults ?
                 <ScrollView style={styles.results}>
-                    
+                    <Text>{errorSearch ? errorSearch : null}</Text>
                 </ScrollView>
                 : null }
             </View>
@@ -180,4 +189,17 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginLeft: 5,
     },
+    results: {
+        position: 'absolute',
+        top: 65,
+        paddingHorizontal: 20,
+        paddingVertical: 20,
+        marginHorizontal: 20,
+        width: '100%',
+        height: 100,
+        zIndex: 100,
+        borderWidth: 1,
+        borderColor: 'red',
+        borderRadius: 10,
+    }
 })
