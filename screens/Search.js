@@ -8,7 +8,7 @@ import {
     StatusBar,
   } from 'react-native';
 
-export const Search = () => {
+export const Search = ({navigation}) => {
     return (
         <View>
             <Text>Search</Text>
