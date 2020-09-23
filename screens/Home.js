@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import {
-    SafeAreaView,
     StyleSheet,
-    ScrollView,
     View,
     Text,
-    StatusBar,
-    TouchableOpacity,
     Dimensions,
-    Button
 } from 'react-native';
 import MapView, { UrlTile, PROVIDER_GOOGLE, Marker, Callout, } from 'react-native-maps';
 

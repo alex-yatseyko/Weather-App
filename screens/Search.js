@@ -5,7 +5,6 @@ import {
     ScrollView,
     View,
     Text,
-    StatusBar,
     TextInput,
     Dimensions
 } from 'react-native';
@@ -24,7 +23,7 @@ export const Search = ({ route, navigation }) => {
     const [city, setCity] = useState('')
     const [weatherData, setWeatherData] = useState([])
     const [search, setSearch] = useState('')
-    const [showResults, setShowResult] = useState(false)
+    const [showResults, setShowResults] = useState(false)
     const [errorSearch, setSearchError] = useState('')
 
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -40,9 +39,10 @@ export const Search = ({ route, navigation }) => {
                     lat: req.results[0].geometry.location.lat,
                     lon: req.results[0].geometry.location.lng,
                 })
+                setShowResults(false)
             } else {
                 setSearchError(req.status)
-                setShowResult(true)
+                setShowResults(true)
             }
         } catch (e) {
             console.log(e)
@@ -95,7 +95,7 @@ export const Search = ({ route, navigation }) => {
                 <TextInput
                     style={styles.input}
                     onChange={(e) => {
-                        setShowResult(false)
+                        setShowResults(false)
                         setSearch(e.nativeEvent.text)
                     }}
                     value={search}
@@ -114,7 +114,8 @@ export const Search = ({ route, navigation }) => {
                 </ScrollView>
                 : null }
             </View>
-            <ScrollView style={styles.dataWrapper}>
+            {/* {showResults ? */}
+            <ScrollView style={[styles.dataWrapper, showResults ? {marginTop: 100} : null]}>
                 {weatherData ? weatherData.map(e => {
                     const numberOfTheDay = (new Date(e.dt * 1000).getDay())
 
@@ -131,8 +132,8 @@ export const Search = ({ route, navigation }) => {
                     // }
                 })
                     : null}
-
-            </ScrollView>
+            </ScrollView> 
+            {/* // : null } */}
         </SafeAreaView>
     )
 }
@@ -173,6 +174,8 @@ const styles = StyleSheet.create({
     },
     dataWrapper: {
         paddingHorizontal: 20,
+        zIndex: 100,
+        position: 'relative'
     },
     oneDayBlock: {
         backgroundColor: 'purple',
@@ -197,7 +200,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         width: '100%',
         height: 100,
-        zIndex: 100,
+        zIndex: 999,
+        backgroundColor: 'white',
         borderWidth: 1,
         borderColor: 'red',
         borderRadius: 10,
