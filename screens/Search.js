@@ -39,6 +39,7 @@ export const Search = ({ route, navigation }) => {
                     lat: req.results[0].geometry.location.lat,
                     lon: req.results[0].geometry.location.lng,
                 })
+                // setSearch(req.results[0].address_components.long_name)
                 setShowResults(false)
             } else {
                 setSearchError(req.status)
@@ -71,7 +72,8 @@ export const Search = ({ route, navigation }) => {
     useEffect(() => {
         data ? setCity(data) : null
         data ? setSearch(data.city) : null
-    }, [])
+        data ? setShowResults(false) : null
+    }, [data])
 
     useEffect(() => {
         getWeatherFull()
