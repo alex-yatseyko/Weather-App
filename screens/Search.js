@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     SafeAreaView,
     StyleSheet,
@@ -8,23 +8,42 @@ import {
     StatusBar,
     TextInput,
     Dimensions
-  } from 'react-native';
+} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-  import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { useHttp } from '../hooks/http.hook'
 
 const WEATHER_API_KEY = '95e01fabdd174fc4972bcd4fb76fe05e'
 
-    // api.openweathermap.org/data/2.5/forecast/daily?q={city name}&cnt=7&appid={API key}
-
-export const Search = ({route, navigation}) => {
+export const Search = ({ route, navigation }) => {
+    const { error, request } = useHttp()
     const { data } = route.params;
+    const [city, setCity] = useState('')
+    
+    const getWeatherFull = async () => {    
+        // const weatherUrl = `http://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&cnt=7&appid=${WEATHER_API_KEY}`
+        const weatherUrl = `http://api.openweathermap.org/data/2.5/forecast/daily?q=${city.city}&cnt=7&appid=${WEATHER_API_KEY}`
+        console.log(weatherUrl)
+        try {
+            const req = await request(weatherUrl)
+            console.log(req)
+            // setCurrentCity(req.name)
+            // setCurrentTemp(req.main.temp)
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     useEffect(() => {
-        data ? console.log(data) : null
-    })
+        data ? setCity(data) : null
+        console.log(city)
+    }, [])
+
+    useEffect(() => {
+        getWeatherFull()
+    }, [city])
 
     return (
         <SafeAreaView>
@@ -34,22 +53,30 @@ export const Search = ({route, navigation}) => {
                         navigation.goBack()
                     }}
                 >
-                    <Icon name="chevron-left" size={25} color={'white'}/>
+                    <Icon name="chevron-left" size={25} color={'white'} />
                 </TouchableOpacity>
                 <Text style={styles.title}>City Search</Text>
-                <Icon name="chevron-left" size={25} color={'purple'}/>
+                <Icon name="chevron-left" size={25} color={'purple'} />
             </View>
-            {/* <Icon name="thermometer-half" size={25} color={'purple'}/> */}
-        <View>
-            <TextInput />
-            <TouchableOpacity
-                onPress={() => {
+            <View style={styles.form}>
+                <TextInput
+                    style={styles.input}
+                />
+                <TouchableOpacity
+                    onPress={() => {
 
-                }}
-            >
-                <Icon name="search" size={25}/>
-            </TouchableOpacity>
-        </View>
+                    }}
+                    style={styles.searchBtn}
+                >
+                    <Icon name="search" size={25} color={'white'} />
+                </TouchableOpacity>
+            </View>
+            <View style={styles.dataWrapper}>
+                <View style={styles.oneDayBlock}>
+                    <Text style={styles.oneDayBlockText}>Monday</Text>
+                    <Icon name="thermometer-half" size={25} color={'white'} />
+                </View>
+            </View>
         </SafeAreaView>
     )
 }
@@ -68,5 +95,39 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 25,
         color: 'white'
-    },  
+    },
+    input: {
+        borderWidth: 1,
+        width: Dimensions.get('window').width - Dimensions.get('window').width / 5,
+        marginRight: 10,
+        borderRadius: 5,
+        paddingVertical: 5,
+        paddingHorizontal: 15,
+    },
+    searchBtn: {
+        backgroundColor: 'purple',
+        borderRadius: 55,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+    },
+    form: {
+        flexDirection: 'row',
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+    },
+    dataWrapper: {
+        paddingHorizontal: 20,
+    },
+    oneDayBlock: {
+        backgroundColor: 'purple',
+        flexDirection: 'row',
+        borderRadius: 5,
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        alignItems: 'center',
+    },
+    oneDayBlockText: {
+        color: '#fff',
+        fontSize: 20,
+    },
 })

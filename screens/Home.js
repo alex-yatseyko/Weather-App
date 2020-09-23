@@ -89,7 +89,11 @@ export const Home = ({ navigation }) => {
                             tooltip={true}
                             onPress={() => {
                                 navigation.navigate('Search', {
-                                    data: currentCity
+                                    data: {
+                                        city: currentCity,
+                                        lat: markerCoords.latitude,
+                                        lon: markerCoords.longitude,
+                                    }
                                 })
                             }}
                             style={{
